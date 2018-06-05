@@ -12,7 +12,7 @@
 
 被声明为singleton的bean，其整个声明周期有spring容器进行管理。
 
-** prototype的作用域 **
+**prototype的作用域**
 
 当bean被声明为prototype类型时，就意味者每次通过getBean()方法获取的bean对象都是全新的。另外需要注意一旦，该类型的bean，Spring容器仅仅负责对其进行实例化，一旦将其交给调用者之后，Spring容器不在管理其声明周期。
 
