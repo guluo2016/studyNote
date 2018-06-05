@@ -1,6 +1,5 @@
-**==shell script学习==**
+**shell script学习**
 
-[TOC]
 
 ### 1 文件头
 
