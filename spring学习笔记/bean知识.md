@@ -1,6 +1,6 @@
 ### bean
 #### 1 bean作用域
-** singleton的作用域 **
+**singleton的作用域**
 
 在Spring IOC容器中仅仅存在一个该bean实例，bean以单例形式存在。
 
