@@ -1,4 +1,4 @@
-## Servlet的声明周期
+## Servlet的生命周期
 
 ### 1 Servlet实例化
 实例化Servlet的时机：
