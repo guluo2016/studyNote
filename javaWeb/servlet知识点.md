@@ -103,7 +103,7 @@ public void destroy() {
 信息: Destroying ProtocolHandler ["ajp-bio-8009"]
 Disconnected from server
 ```
-到此，Servlet的声明周期结束。
+到此，Servlet的生命周期结束。
 
 ### 5 总结
 Servlet实例化时机是可以控制的，在实例化后可以停留在服务器中不断处理请求，并且给用户响应结果，且是非线程安全类，它会在服务器停止时自动调用destory()方法，调用完destory()方法后的Servlet对象不再可用，因为已经死亡了，此时生命周期结束。
