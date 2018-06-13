@@ -24,3 +24,11 @@ join on通常用在对多个表进行连接查询，最常见的是left join on�
 上面所表示的意思是：如果s1不为null,显示s1的结果，如果为null，则显示s2的结果
 **然而MySQL中的ifnull()函数，oracle中并没有同名函数，如果想用的话，可以使用oracle中国的nvl()函数，和ifnull()函数表示的意思一样**
 
+## 以关键字做字段名
+在oracle中如果以data,char等类型声明关键字为字段，会报错(我在pl/sql上操作)
+如：
+`select create_time as data from table1` //会出错，不能以data为字段名
+*同时char也不可以做为字段名，但是比较奇怪的是，我测试int 做字段名竟然不报错*
+如果非想使用这些关键字做字段名，可以使用双引号将关键字包起来就行了，注意，单引号不行
+
+同样的问题在mysql中并不会出现，我测试了一下，在建表的时候可以使用关键字（date，int，char）作为字段名，并不会报错
