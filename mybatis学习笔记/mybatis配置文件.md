@@ -12,4 +12,16 @@
 - 最后读取作为方法参数传递的属性，并覆盖已读取的同名属性。
 
 #### 2 `<typeAliases>` ####
-为为 Java 类型设置一个别名，有的名字比较长，不利于代码阅读和理解，因此可以为其起一个易记的别名
+为 Java 类型设置一个别名，有的名字比较长，不利于代码阅读和理解，因此可以为其起一个易记的别名。在Mybatis中别名分为两类，分别是：系统定义别名和自定义别名。*注意在mybatis中别名是不区分大小写的*
+mybatis别名的实例是在解析mybatis配置文件的时候生成的，并且长期保存在Configuration对象中，用的时候直接去取就行了。
+
+系统定义别名常用的有：
+- int,long,double,float,boolean,等对应Java中的基本数据类型
+- string，arraylist(对应与Java中的ArrayList),list，map,hashmap等等常用的引用数据类型
+
+自定义别名的方式：
+```
+<typeAliases>
+	<typeAlias alias = "person" type="com.test.Person" />
+</typeAliases>
+```
