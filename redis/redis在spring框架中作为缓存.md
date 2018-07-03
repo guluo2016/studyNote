@@ -1,3 +1,14 @@
+<!-- MarkdownTOC -->
+
+- 1 demo的主要思路
+- 2 基于redis设计spring缓存
+- 3 验证有效性
+- 4 遇到的问题
+- 5 总结
+
+<!-- /MarkdownTOC -->
+
+
 ## 1 demo的主要思路
 
 - redi作为spring框架中的缓存
