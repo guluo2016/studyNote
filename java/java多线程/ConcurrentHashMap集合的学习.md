@@ -5,7 +5,9 @@
 集合弥补了数组长度固定的缺陷，通过集合可以不必像数组一样，事先确定长度，这有很强的便利性。Map是一种key-value对集合，实际上在编程过程中，会用到大量的key-value对形式的数据结构，这个时候将其存入到Map集合中，非常便于管理。  
 Map是一个接口，下面最常用的实现类是HashMap,它在底层是通过Hash表数据结构来存储存放的key-value对，取数据的时候，直接通过key的hash值，再根据hash函数，快速获取对应的value值。  
 但是HashMap存在一个问题，那就是在多线程环境下不是线程安全的,先来看看HashMap的数据结构，HashMap内部是一个Hash表，Hash表实际上是由一个由Entry元素构成的数组和一个由Entry元素构成的链表两部分构成，Entry数组是HashMap的主干。
+
 ![HashMap内部结构.jpg](../../image/java/HashMap内部结构.jpg)
+
 HashMap是根据key的Hash值来决定key-value存放在哪个Entry中的，具体做法是，首先根据key的Hash值确定在Entry数组下标，如果这个节点正好没有存值的话，那就吧key-value存进去，如果有值的话，根据解决Hash冲突策略，将其添加到以该数组下标节点为头结点的链表尾部。
 
 根据HashMap的内部结构可以看出来，在单线程环境下，没有任何问题，但是多线程环境下就不行了，举个例子，当线程A向HashMap中插入数据，此时线程B也向HashMap中插入一个数据，加入他们两个的key的Hash值一样，那么都会首先找到对应数组节点，再以该节点为头节点，遍历链表，找到尾节点Entry，再修改Entry的next指向自己,但是后如果A和B同时拿到Entry的next,修改指向自己，那么后刷新到主内存的那个会覆盖前者，最终仅仅插入了一个key-value对。
