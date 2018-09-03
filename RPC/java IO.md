@@ -41,15 +41,21 @@ Java IO是借助于流的概念从文件中读写数据。
 InputStream inputStream = new FileInputStream(file)  //基于目标文件创建一个输入流，可以将文件中的内容读出来
 OutStream outStream = new FileOutputStream(file) //基于目标文件创建一个输出流，可以向文件中写入数据
 //以字符为单位
-
+Reader reader = new FileReader("/home/guluo/test.txt");
+Writer writer = new FileWriter("/home/guluo/test.txt");
 ```
 #### 2.2 缓冲流
 IO速度是很慢的，貌似地球人都知道，人们也都在努力缩小IO速度与cpu速度之间的巨大差距。为了提高Java IO的速度，提出了缓冲区，当从文件中读写数据的时候，会首先将目标数据放入到缓冲区中，读取数据的时候，是把文件中的数据放入到缓冲区中暂存，写数据的时候，也是把程序产生的数据放入到缓冲区中暂存，这样可以有效缓解IO与CPU之间因速度而产生的矛盾。  
 基于缓冲流的实现类是：`BufferedInputStream,BufferedOutputStream,BufferedReader,BufferedWriter`，分别是上面四个基类的实现类。  
-需要说明一点，因为缓冲区实际上是套在流上的（data---流---buffer---cpu，data---buffer---流---文件），因此想使用缓冲流，需要确定目标是谁才行。   
+需要说明一点，因为缓冲区实际上是套在流上的（data---流---buffer---cpu，data---buffer---流---文件），因此想使用缓冲流，需要确定目标是谁才行。  
+
 ```
-//以字符为单位，缓冲区的目标是FileWriter流
-BUfferedReader bufferReader =  BufferedReader(new FileReader("d:\\IOTest\\source.txt"));
+//以字符为单位，缓冲区的目标是FileReader流和FileWriter流
+BUfferedReader bufferReader =  BufferedReader(new FileReader("/home/guluo/test.txt"));
+BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/home/guluo/test.txt"));
+//以字节为单位，
+BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("/home/guluo/test.txt"));
+BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream("/home/guluo/test.txt"));
 ```
 #### 2.3 转换流
 文件中存放的数据可能是数字，也可能是文件，如果是文字的话，可能是西文，也可能是中文、日文、韩文，而且不同操作系统的默认编码格式不同，导致文件的编码格式也会不一样，如Ubuntu默认的是utf-8，Windows会根据国家地区，如在中国默认编码格式是gbk。  
@@ -61,3 +67,10 @@ BUfferedReader bufferReader =  BufferedReader(new FileReader("d:\\IOTest\\source
 Writer writer =  OutputStreamWriter(OutputStream out,String charsetName)
 ```
 #### 2.4 标准输入输出流
+
+标准输入输出流有：标准输入流、标砖输出流；System.in是一个未经过包装的InputStream，因此如果向通过标准输入输入数据的话，必须进行二次封装才行，不能够直接使用：  
+```
+
+Scanner in=new Scanner(System.in);
+```
+而System.out和System.err是经过包装之后的输出流：PrintStream。标准输入输出可以允许我们从屏幕介入输入数据或者向屏幕输出数据,使用标准输出，因为该流已经被包装过了，因此可以直接使用，向屏幕输出数据。
