@@ -74,3 +74,25 @@ Writer writer =  OutputStreamWriter(OutputStream out,String charsetName)
 Scanner in=new Scanner(System.in);
 ```
 而System.out和System.err是经过包装之后的输出流：PrintStream。标准输入输出可以允许我们从屏幕介入输入数据或者向屏幕输出数据,使用标准输出，因为该流已经被包装过了，因此可以直接使用，向屏幕输出数据。
+#### 2.5 对象流
+Java是一门面向对象的语言，在Java世界里万物皆对象，但是程序运行过程中对象都是放在内存中的，程序停止或者断电这些对象都不会再存在了。为了能够将这些对象持久化保存在文件中，Java提供了对象流，用于将对象写入到文件，或者从文件中读取一个之前保存的对象。
+
+**序列化：**序列化是指将目标对象转换成与平台无关的二进制流，进而可以保存到文件中，或者进行网络传输。Java规定普通的实例化对象是不能够被持久化保存到文件中的，只有实现了Serializable接口的实例对象才是能够被序列化的。  
+```
+public class Persion implements Serializable{
+  ...
+}
+
+Person person = new Person();   //person对象是可以被序列化成二进制文件保存到文件中，或者就行网络传输 
+```
+要将一个可以被序列化的对象保存到文件中,或者从一个文件中读取一个序列化对象，需要`ObjectInputStream,OjbectOutputSteam`  
+```
+//创建一个对象输出流，将该对象输出流传入到文件输出流中，进而保存到文件中，对象流不能够直接往文件中写入数据
+ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("/home/guluo/test.txt"));
+//将person对象写入流中
+objectOutputStream.writeObject(person);
+//创建一个对象输出流
+ObjectInputStream objectInputStream = new ObjectInputStream(new FileOutputStream("/home/guluo/test.txt"))；
+//读取对象
+Person person= (Person) objectInputStream.readObject();
+```
