@@ -82,6 +82,12 @@ buffer.get()
 原因：从缓冲区中读取数据是根据position来读取的。当一直写数据的时候，position会不断变化，一直指向当前正在操作的位置，此时想从缓冲区中读取数据的话，不翻转直接读，那么读取position的下一位，要么是脏数据要么就没有数据，为了避免这种情况，NIO设计师们设计不翻转直接读的时候会报错。  
 调用flip()之后,limit的值将会置为position，position将会置为0。然后在将缓冲区清空或者清空已经读取的数据位置，为下一次往缓冲区中写入数据腾出位置。
 ```
+public final Buffer flip() {
+	limit = position;
+	position = 0;
+	mark = -1;
+	return this;
+}
 ```
 
 因此操作缓冲区的步骤：
@@ -89,3 +95,77 @@ buffer.get()
 2.buffer.flip()
 3.从缓冲区中读取数据
 2.清空缓冲区（clear()/compact()）
+
+### 3 Selector
+在学习过程中，Selector更多的是用于网络连接方面，和本地文件的IO倒是没有看到应用Selector的例子。  
+
+传统的服务器监听连接方式：  
+1.服务器开启一个线程，监听客户端发来的请求，一旦有用户请求来临之后，就进行相关处理，由于IO是阻塞IO，导致线程需要花大量时间等待IO操作（从网络传输流中读写数据），等把这个请求处理完毕并给用户返回响应之后，在进行处理下一个连接。这中系统一旦用户多那么一点点，就可能够受不了了，因为一次只能处理一个用户的请求，显然不能够满足需求。   
+2.为了解决这个问题，人们又设计了另外一种方式，就是一个线程一直不断地监听连接，一旦又连接来临时，就开启一个线程，专门为这个一个用户负责，来几个用户就开启几个线程，这样就是其中一个线程因为IO阻塞了，也不为影响其他线程的数据处理，大大提高了系统的数据处理能力。但是这也存在一个问题，就是一个线程只为一个用户负责未免显得有点浪费，因为不断的创建、销毁线程是很耗费资源的，另外一台服务器也不能无限制创建线程（一个系统能够创建的线程总数是有限的），这导致了在用户量巨大的情况下，如果每个用户的IO时间很长的话，后来的用户将迟迟得不到处理。  
+
+这归根究底都是IO速度太慢给闹的(网络上的可能是由于数据迟迟穿不过来)，但是直接采用非阻塞IO，可能又会读取不到数据（上面说过），基于以上两个方面的考虑，人们提出了Selector。
+
+Selector可以用于管理Channel，此时Channel需要向Selector进行注册，只有注册之后，Selector才会真正的去管理Channel。一个Selector可以管理多个通道，Selector通过select()方法不断的轮休这些Channel，当所有的Channel上都没有IO操作的时候，select()会阻塞，当注册在Selector上的Channel至少有一个需要进行IO操作的是偶，正在执行select()方法的线程将会被唤醒，并且返回一个整数，代表有几个Channel需要进行IO操作。
+
+这样的话，每当有用户连接时，就会创建一个SocketChannel，并将其注册到Selector上。服务器只需要开启一个线程就可以处理多个用户连接：这条线程执行Selector，如果没有连接，阻塞，有连接的话，建立通道并注册到Selector上，交由Selector管理，Selector不管轮询注册在其上的Channel，有IO操作的话，就进行处理，当数据没有完全到来的时候也可以处理，此时read操作非阻塞不需要等待，立即返回，这样就可以使得一条线程处理多个用户，大大提高了线程的数据处理能力，也减轻了服务器端的压力。（netty框架据说可以一条线程处理成千上完个用户连接，还没有学习到，到时候看看是如何做到的）
+
+这种方式，实际上就是把传统的多条线程阻塞转嫁到一条线程阻塞上了，一旦有IO操作就不再阻塞，进行数据处理。
+
+获取Selector对象：
+```
+Selector selector = Selector.open();
+```
+
+在向Selector注册的时候，可以设置Selector需要关注Channel上的什么动作，有以下几种：  
+```
+SelectionKey.OP_CONNECT    //关注连接
+SelectionKey.OP_ACCEPT     //呜呜呜
+SelectionKey.OP_READ       //关注读IO
+SelectionKey.OP_WRITE      //关注写IO
+```
+注册方法：
+```
+//Selector关注Channel的读IO操作
+channel.register(selector,Selectionkey.OP_READ);
+//当对于同一个Channel需要关注多个动作的时候
+channel.register(selector,Selectionkey.OP_READ | SelectionKey.OP_WRITE);
+```
+一旦Channel有关注的动作发生，那么select()停止阻塞，并返回一个整数，这个时候可以调用：
+```
+//返回有IO动作的类型的集合
+Set<SelectionKey> keys = selector.selectedKeys()；
+//便利集合，获得集合中一个元素key，通过可以获取发生IO动作的对应的Channel
+ServerSocketChannel server =(ServerSocketChannel) key.channel();
+//基于该通道，根据Channel上的动作进行读、写、建立连接等等IO操作
+...
+```
+
+具体代码：
+```
+Selector selector = Selector.open();
+ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+ServerSocket serverSocket = serverSocketChannel.socket();
+serverSocket.bind(new InetSocketAddress(8888));
+serverSocketChannel.configureBlocking(false);
+serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT | SelectionKey.OP_READ);
+
+while (selector.select() > 0){
+    Set<SelectionKey> keys = selector.selectedKeys();
+    for (SelectionKey key : keys){
+        selector.selectedKeys().remove(key);  //手动移除，Selector不会自动帮忙移除的
+        if (key.isAcceptable()){
+            ServerSocketChannel server = (ServerSocketChannel) key.channel();
+            //建立一个用户连接
+            SocketChannel socketChannel = server.accept();
+            socketChannel.register(selector,SelectionKey.OP_READ);
+        }
+
+        //...
+    }
+}
+```
+
+### 4 参考资料
+[java NIO详解](http://www.importnew.com/22623.html):http://www.importnew.com/22623.html
+[Java NIO系列教程（三） Buffer](http://ifeve.com/buffers/):http://ifeve.com/buffers/
+[Java NIO系列教程（六） Selector](http://ifeve.com/selectors/):http://ifeve.com/selectors/
