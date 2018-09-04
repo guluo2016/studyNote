@@ -166,6 +166,6 @@ while (selector.select() > 0){
 ```
 
 ### 4 参考资料
-[java NIO详解](http://www.importnew.com/22623.html):http://www.importnew.com/22623.html
-[Java NIO系列教程（三） Buffer](http://ifeve.com/buffers/):http://ifeve.com/buffers/
-[Java NIO系列教程（六） Selector](http://ifeve.com/selectors/):http://ifeve.com/selectors/
+[java NIO详解](http://www.importnew.com/22623.html):http://www.importnew.com/22623.html       
+[Java NIO系列教程（三） Buffer](http://ifeve.com/buffers/):http://ifeve.com/buffers/      
+[Java NIO系列教程（六） Selector](http://ifeve.com/selectors/):http://ifeve.com/selectors/    
