@@ -96,3 +96,5 @@ ObjectInputStream objectInputStream = new ObjectInputStream(new FileOutputStream
 //读取对象
 Person person= (Person) objectInputStream.readObject();
 ```
+### 3 参考资料
+[白大虾的博客：java IO](https://www.cnblogs.com/baixl/p/4170599.html)：https://www.cnblogs.com/baixl/p/4170599.html
