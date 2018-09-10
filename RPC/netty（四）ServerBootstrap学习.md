@@ -43,7 +43,7 @@ serverBootstrap.channel(NioServerSocketChannel.class);
 public B channel(Class<? extends C> channelClass) {
  	
  	//看名字就知道channel工厂，肯定是用来创建Channel的
- 	//这里程序使用的是NioServerSocketChannel，因此它会创建一个NioServerSocketChannel对象
+ 	//这里程序使用的是NioServerSocketChannel，因此这个工厂会创建一个NioServerSocketChannel对象
     return this.channelFactory(new AbstractBootstrap.BootstrapChannelFactory(channelClass));
 }
 ```
