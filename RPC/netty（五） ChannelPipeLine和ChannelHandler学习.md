@@ -53,24 +53,27 @@ protected DefaultChannelPipeline(Channel channel) {
 
 在netty框架中，当inbound事件发生时，会触发以下方法： 
 ```
-ChannelHandlerContext.fireChannelRegistered()    //Channel注册的时候会被调用
-ChannelHandlerContext.fireChannelActive()      //TCP链路建立成功时，会被调用
-ChannelHandlerContext.fireChannelRead(Object)   //读事件发生时调用
-ChannelHandlerContext.fireChannelReadComplete()   //读事件完成的时候调用
-ChannelHandlerContext.fireException()     //发生异常的时候会被调用
-ChannelHandlerContext.fireUserEventTriggered(Object)  //用户自定义事件发生的时候被调用
-ChannelHandlerContext.fireChannelInactive()   //TCP链路关闭的时候会被调用
-ChannelHandlerContext.fireChannelWritabilityChanged()  //写状态变化事件时被调用
+ChannelInboundHandler.fireChannelRegistered()    //Channel注册的时候会被调用
+ChannelInboundHandler.fireChannelActive()      //TCP链路建立成功时，会被调用
+ChannelInboundHandler.fireChannelRead(Object)   //读事件发生时调用
+ChannelInboundHandler.fireChannelReadComplete()   //读事件完成的时候调用
+ChannelInboundHandler.fireException()     //发生异常的时候会被调用
+ChannelInboundHandler.fireUserEventTriggered(Object)  //用户自定义事件发生的时候被调用
+ChannelInboundHandler.fireChannelInactive()   //TCP链路关闭的时候会被调用
+ChannelInboundHandler.fireChannelWritabilityChanged()  //写状态变化事件时被调用
 ```
+以上这些方法
 在netty框架中，当outbound事件发生时，会触发以下方法：
 ```
-ChannelHandlerContext.bind（）   //bind事件
-ChannelHandlerContext.connect    //连接事件
-ChannelHandlerContext.write()   //写操作事件
-ChannelHandlerContext.read()    //读事件
-ChannelHandlerContext.flush()    //刷新事件
-ChannelHandlerContext.disconnect()   //断开连接事件
-ChannelHandlerContext.writeAndFlush
+ChannelOutboundHandler.bind（）   //bind事件
+ChannelOutboundHandler.connect    //连接事件
+ChannelOutboundHandler.write()   //写操作事件
+ChannelOutboundHandler.read()    //读事件
+ChannelOutboundHandler.flush()    //刷新事件
+ChannelOutboundHandler.disconnect()   //断开连接事件
+ChannelOutboundHandler.writeAndFlush   
+ChannelOutboundHandler.deregister()  //注销
+ChannelOutboundHandler.close()    //关闭事件
 ```
 
 *有点疑惑：就是read事件的时候为什么outbound事件所属方法被调用？没有理解*    
@@ -87,7 +90,151 @@ ChannelHandler相当与Java Web应用的拦截器，在请求到来前后和响�
 当需要关注于多个事件的时候，为了保证ChannelHandler的专注性，可以建立多个ChannelHandler，然后添加到Pipeline中的那个双向链表中，当数据从通道流动的时候，依据事件会因此触发这个双向链表中的各个handler。
 
 ### 4 ChannelHandler的触发流程
-bind(）事件，当该Channel上bind事件发生之后，因为bind事件时outbout事件，会找到该Channel中的那个handler构成的双向链表，从尾节点开始，一次查找每一个Handler，如果发现这个handler能够处理outbound事件，那么，调用基于这个handler对象调用bind()方法，如果这个handler使我们自己新建的handler，并且重写了其中的bind()方法，那么根据多态就会执行我们自己重写的业务逻辑，因此就会按照我们自己的意志来完成一些操作。
+#### 4.1 handler处理outbound事件流程
+bind(）事件，当该Channel上bind事件发生之后，因为bind事件时outbout事件，会找到该Channel中的那个handler构成的双向链表，从尾节点开始，一次查找每一个Handler，如果发现这个handler能够处理outbound事件，那么，调用基于这个handler对象调用bind()方法，如果这个handler使我们自己新建的handler，并且重写了其中的bind()方法，那么根据多态就会执行我们自己重写的业务逻辑，因此就会按照我们自己的意志来完成一些操作。   
+来看看代码：
+```
+//1
+serverBootstrap.bind();
 
-### 5 参考资料
+//2
+serverBootstrap.doBdind();
+
+//3
+private static void doBind0(final ChannelFuture regFuture, final Channel channel, final SocketAddress localAddress, final ChannelPromise promise) {
+    //这里会调用一个NioEventLoop线程去执行bind操作
+    channel.eventLoop().execute(new Runnable() {
+        public void run() {
+            if (regFuture.isSuccess()) {
+                //调用的时Channel的bind()方法
+                channel.bind(localAddress, promise).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+            } else {
+                promise.setFailure(regFuture.cause());
+            }
+
+        }
+    });
+}
+
+...
+
+//调用Channel所属的pipeline的bind()方法
+public ChannelFuture bind(SocketAddress localAddress, ChannelPromise promise) {
+    return this.pipeline.bind(localAddress, promise);
+}
+
+//从这里可以看出来，会从pipeline中的双向链表中找，
+//入口是tail即尾节点
+public final ChannelFuture bind(SocketAddress localAddress, ChannelPromise promise) {
+    return this.tail.bind(localAddress, promise);
+}
+
+//上面也已经解释过了
+public ChannelFuture bind(final SocketAddress localAddress, final ChannelPromise promise) {
+    if (localAddress == null) {
+        throw new NullPointerException("localAddress");
+    } else if (this.isNotValidPromise(promise, false)) {
+        return promise;
+    } else {
+        //找到能够处理outbound事件的handler
+        final AbstractChannelHandlerContext next = this.findContextOutbound();
+        EventExecutor executor = next.executor();
+        if (executor.inEventLoop()) {
+            next.invokeBind(localAddress, promise);
+        } else {
+            safeExecute(executor, new Runnable() {
+                public void run() {
+                    next.invokeBind(localAddress, promise);
+                }
+            }, promise, (Object)null);
+        }
+
+        return promise;
+    }
+}
+
+//执行handler的invokeBind
+private void invokeBind(SocketAddress localAddress, ChannelPromise promise) {
+    if (this.invokeHandler()) {
+        try {
+            //这里就会执行hendler的bind()方法，如果重写了的话，就会执行我们重写的bind
+            ((ChannelOutboundHandler)this.handler()).bind(this, localAddress, promise);
+        } catch (Throwable var4) {
+            notifyOutboundHandlerException(var4, promise);
+        }
+    } else {
+        this.bind(localAddress, promise);
+    }
+
+}
+```
+
+#### 4.2 handler处理inbound事件流程
+以链路建立为例，前面已经说过了，在Server端创建了两个线程池NioEventLoop，其中AbstractBootstrap.parentGroup用于监听端口，在启动的时候会创建一个ServerNioSocketChannel通道，一旦这个Channel通道建立的时候就会出发
+```
+serverBootstrap.bind();
+
+//serverBootstrap.initAndRegister
+final ChannelFuture initAndRegister() {
+
+    ChannelFuture regFuture = this.group().register(channel);
+}
+
+//调用NioEventLoopGroup中的register
+ public ChannelFuture register(Channel channel) {
+    return this.next().register(channel);
+}
+
+//调用NioEventLoop的register
+public ChannelFuture register(Channel channel, ChannelPromise promise) {
+    if (channel == null) {
+        throw new NullPointerException("channel");
+    } else if (promise == null) {
+        throw new NullPointerException("promise");
+    } else {
+        channel.unsafe().register(this, promise);
+        return promise;
+    }
+}
+
+//AbstractUnsafe.register -> AbstractUnsafe.register0
+private void register0(ChannelPromise promise) {
+    try {
+        if (!promise.setUncancellable() || !this.ensureOpen(promise)) {
+            return;
+        }
+
+        boolean firstRegistration = this.neverRegistered;
+        AbstractChannel.this.doRegister();
+        this.neverRegistered = false;
+        AbstractChannel.this.registered = true;
+        AbstractChannel.this.pipeline.invokeHandlerAddedIfNeeded();
+        this.safeSetSuccess(promise);
+        //Channel注册事件触发
+        AbstractChannel.this.pipeline.fireChannelRegistered();
+        if (AbstractChannel.this.isActive()) {
+            if (firstRegistration) {
+                //链路建立成功事件，触发此方法
+                AbstractChannel.this.pipeline.fireChannelActive();
+            } else if (AbstractChannel.this.config().isAutoRead()) {
+                this.beginRead();
+            }
+        }
+    } catch (Throwable var3) {
+        this.closeForcibly();
+        AbstractChannel.this.closeFuture.setClosed();
+        this.safeSetFailure(promise, var3);
+    }
+
+}
+```
+### 5 总结
+SocketChannel包含pipeline，pipeline包含handler，它们的关系就是这样，客户端与服务端交互的时候实际上走的就是SocketChannel中的Pipeline，在数据流动的过程中会形成一个个的事件，并依次会触发pipeline中的handler，handler会根据事件，触发不同的方法。
+
+因此，我们可以通过重写handler，将我们定义的业务逻辑加到这里面，在合适的时机被执行。
+
+netty框架中的事件有inbounf事件和outbound事件，如果我们对inbound事件感兴趣的话，那么可以继承ChannelInboundHandler,并重写其中的特定动作能够触发的方法，比如我们对inbound事件中的读事件感兴趣，那么就可以重写channelRead()方法，从通道中读取客户端传过来的数据。如果对outbound事件感兴趣，可以继承ChannelOutboundHandler，并重写其中的特定动作能够触发的方法。
+
+
+### 6 参考资料
 **《Netty权威指南》**
