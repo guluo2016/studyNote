@@ -109,7 +109,7 @@ public class ClientHandler extends SimpleChannelInboundHandler(ByteBuf){
     
     //连接建立成功之后，netty自动调用此方法
     public void channelActive(ChannelHandlerContext ctx){
-        //这里想服务器发送个消息
+        //这里向服务器发送个消息
         ctx.writeAndFlush(Unpooled.copiedBuffer("hello，Netty",CharsetUtil.UTF_8))；
     }
     
@@ -135,7 +135,7 @@ public ClientNetty{
             Bootstrap bootstrap = new Bootstrap();
             
             serverBootstrap.group(group,worker)
-                .channel(NioServerSocketChannel.claa)
+                .channel(NioSocketChannel.claa)
                 //绑定要连接的远程服务器的IP 端口号
                 .localAddress(new InetSocketAddress(localhost,8888));
                 .handler(new ChildInitializer<SocketChannel>(){
@@ -144,7 +144,7 @@ public ClientNetty{
                         socketChannel.pipeline().addLast(new ClinetHandler());
                     }
                 });
-            ChannelFuture future = bootstrap.bind().sync();
+            ChannelFuture future = bootstrap.connect().sync();
             future.channel().closeFuture().sync();
         }finally{
             group.shutdownGracegully().sync();
@@ -154,5 +154,21 @@ public ClientNetty{
 ```
 完成。
 
-### 3 参考资料   
+### 3 后续遇到的问题
+再次复习Netty的时候，才发现这里竟然写错了许多地方，现在修改了。  
+
+遇到的问题：  
+1.发送的数据服务端死活都接不到   
+代码如下：
+```
+//客户端发送消息
+public void channelActive(ChannelHandlerContext ctx){
+    //向服务器发送个消息
+    ctx.writeAndFlush("hello，Netty")；
+}
+```
+这是因为，在网络传输的时候只能是字节流。因此我推测是因为我直接发送了字符串，在ClientNetty中也没有添加编解码的handler，导致数据根本没有发送过去。解决办法就是：
+1）添加编解码的handler  StringDecoder和StringEncoder
+2）将字符串转成字节流来发送：Unpooled.copiedBuffer("hello，Netty",CharsetUtil.UTF_8)
+### 4 参考资料   
 **《Netty 权威指南》**
