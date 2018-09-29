@@ -158,7 +158,7 @@ public ClientNetty{
 再次复习Netty的时候，才发现这里竟然写错了许多地方，现在修改了。  
 
 遇到的问题：  
-1.发送的数据服务端死活都接不到   
+1. 发送的数据服务端死活都接不到   
 代码如下：
 ```
 //客户端发送消息
@@ -170,5 +170,9 @@ public void channelActive(ChannelHandlerContext ctx){
 这是因为，在网络传输的时候只能是字节流。因此我推测是因为我直接发送了字符串，在ClientNetty中也没有添加编解码的handler，导致数据根本没有发送过去。解决办法就是：
 1）添加编解码的handler  StringDecoder和StringEncoder
 2）将字符串转成字节流来发送：Unpooled.copiedBuffer("hello，Netty",CharsetUtil.UTF_8)
+
+2. 发送对象的时候要慎重
+在Java世界中，如果想要讲对象持久化或者在网络中传输，其前提条件是：对象必须能够序列化。因此，利用netty发送对象的时候，必须首先确保该对象是可以被序列化的，另外需要添加对象编解码的Handler：ObjectEncoder和ObjectDecoder。  
+另外需要注意一点,一个类中如果存在不能序列化的属性的化，那么这个类对象是不能被序列化的。我们常见的能够序列化的对象有：String对象、Date对象等等。
 ### 4 参考资料   
 **《Netty 权威指南》**
