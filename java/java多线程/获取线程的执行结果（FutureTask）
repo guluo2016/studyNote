@@ -1,0 +1,72 @@
+## 1 Runnable存在的不足
+我们通常使用Runnable借口的实现类来创建一个线程对象，线程的执行体往往定义在Runnable借口所声明的方法run。但是run方法是一个void类型的方法，
+这就意味着无法获取线程的执行结果。  
+但是现实的需求往往又是，有时候有需要获取线程的执行结果，为此人们又设计了Future接口和Callable接口。
+
+## 2 Callable
+
+Callable接口代表的就是任务，我们要线程去执行的任务是什么，就是在这里定义的。
+
+Callable接口中只有一个方法，call方法，这个方法的作用和Runnable接口中的run方法一样，表示线程的执行体，但是又有一点不同，call方法是有返回值
+的，因此也意味着我们可以获取线程直接完毕之后的结果。
+```
+interface Callable<V>{
+    V call() throw Exception;
+}
+```
+## 3 Future接口
+Future接口定义了我们可以对线程进行何种操作。
+```
+interface Future{
+    boolean cancel(boolean mayInterruptIfRunning);
+    boolean isCancelled();
+    boolean isDone();
+    V get() throws InterruptedException, ExecutionException;
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+```
+从定义方法中也可以看出来，通过Future接口，我们可以对线程进行取消任务执行、判断任务是否被取消、任务是否被执行完毕、获取执行完任务的结果等操作。
+
+## 4 FutureTask
+
+FutureTask是Future接口的实现类，同时FuturTask也实现了接口Runnable，因此FutureTask也是可以作为Runnable对象被Thread执行。 
+FutureTask最常用的构造方法就是：
+```
+public FutureTask(Callable<V> callale){
+    //do something;
+}
+```
+通过该构造方法，可以看出来，我们可以通过Callable的子类来定义线程要执行的任务，然后作为参数封装到FutureTask对象中，然后再把FutureTask对象交给
+Thread去执行即可。  
+其具体步骤如下：
+```
+1. 定义Callable的实现类MyTask，作为线程任务
+2. 创建FutureTask对象，讲MyTask对象封装到FutureTask对象当中
+3. 将FutureTask对象交给Thread对象
+4. Thread对象调用start()方法执行任务，并返回执行任务的结果
+5. 通过FutureTask的get()方法获取任务执行结果
+```
+## 5 FutureTask是如何拿到线程的执行结果的
+当Thread对象调用start方法后，会执行FutureTask中从Runnable接口继承过来并重写的run()方法：
+```
+public void run(){
+    //do something;
+    //调用了Callable中的call方法，实际上就是去执行了我们定义的任务体
+    result = c.call()
+    
+    //把任务执行结果封装到FutureTask中的outcome属性中，
+    //以便于我们想要获取结果的时候，直接使用get()方法就可以获取结果
+    set(result);
+}
+```
+获取执行结果：
+```
+//我们首先需要判断一下，这个任务是否执行完毕
+//没有执行完毕，通常是不会有结果的
+if(!futureTask.isDone()){
+    //等待
+}
+//任务执行完毕，过去结果
+result = futureTask.get();
+```
