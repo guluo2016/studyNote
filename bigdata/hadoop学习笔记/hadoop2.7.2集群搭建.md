@@ -1,4 +1,4 @@
-##Hadoop 2.7.1集群搭建##
+## Hadoop 2.7.1集群搭建 ##
 
 这里搭建hadoop集群，使用了三台电脑，分别是：  
 192.168.0.11  
@@ -7,7 +7,7 @@
 
 各个主机名分别是： master,salve1,salve2
 
-###1配置hosts各个主机###
+### 1 配置hosts各个主机 ###
 修改hosts文件：  
 ```
 127.0.0.1 localhost
@@ -16,7 +16,7 @@
 192.168.0.13    slave2
 ```
 
-###2 免密登录###
+### 2 免密登录 ###
 安装ssh服务，这里使用的centos环境，需要安装：  
 ```
 #安装ssh服务端
@@ -34,7 +34,7 @@ cat id_rsa.pub >> authorized_keys
 ssh slave1   //免密登录
 ```
 
-###3 安装jdk###
+### 3 安装jdk ###
 下载jdk安装包：jdk-XXX.tar.gz,解压安装  
 ```
 tar zxvf jdk-XXX.tar.gz -C /opt
@@ -46,7 +46,7 @@ export PATH={JABA_HOME}/bin:${PATH}
 source /etc/profile
 ```
 
-###4 安装hadoop###
+### 4 安装hadoop ###
 下载hadoop安装包：hadoop-2.7.1.XXX.tar.gz,解压进行安装：
 ```
 tar zxvf hadoop-2.7.1.XXX.tar.gz -C /opt
@@ -184,7 +184,7 @@ Storage directory /home/hadoop/dfs/name has been successfully formated.
 ...
 ```
 
-###5 测试hadoop集群###
+### 5 测试hadoop集群 ###
 在hdfs上新建一个文件夹/input,并上传测试文件word.txt:  
 ```
 hdfs dfs -mkdir  /input
@@ -194,7 +194,7 @@ hdfs dfs -put /home/word.txt /input
 
 使用hadoop自带的wordcount类来统计word.txt中的字数：  
 ```
-hadoop jar /opt/hadoop-2.7.1/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.XX.jar worcount /input/* /out
+hadoop jar /opt/hadoop-2.7.1/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.XX.jar worcount /input/* /out  
 
 使用如下指令查看统计结果：
 hdfs dfs -cat /out/*
