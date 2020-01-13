@@ -1,4 +1,4 @@
-*git指令*  
+**git指令**  
 
 - git merge 分支名   //用于把指定分支合并到当前所在分支上
 	在进行merge的时候，可能会会出现冲突，这个时候merge是没有完成的；这个是时候需要修改冲突文件，并再次提交修改，此时merge才算是完成   
@@ -28,17 +28,41 @@
 - git checkout 分支名  //切换到指定分支
 - git branch -d 分支名  //删除指定分支
 
-*git远程推送*
+- git remote与远程仓库产生关联，当我们在本地新建一个git仓库，并且想把这个仓库推送到远程服务器上(如github)，这个时候，可以使用该指令。  
+	例子：
+```
+	//具体做法是：
+	// 1 在本地创建一个git仓库
+	mkdir git-test
+	cd git-test
+	git init
+
+	// 2 在github上创建一个git仓库
+
+	// 3 将本地仓库与github上的仓库关联起来
+	git remote add origin git@github.com:guluo2016/luceneCodeStudy.git
+
+	// 4 同步本地仓库与github仓库
+	git fetch 
+
+	// 5 推送本地修改到github上指定分支，如果github上不存在该分支，在推送过程中会创建一个新分支
+	git push -u origin test
+```
+
+**git远程推送**
+
 - 当远程仓库中有与之同名的分支时，可以使用`git push origin 分支名`进行远程推送
 - 当要删除远程分支时，可以使用`git push origin --delete 远程分支名`
 - 当远程仓库中没有与之匹配的分支时，使用`git push --set-upstream origin 自定分支名` 进行远程推送
 
-*git clone/git pull*
+**git clone/git pull**
+
 - git clone是从远程仓库克隆一个完整的仓库到本地（包含了所有的分支）
 - git pull是从远程仓库中拉取指定分支与当前分支进行合并，如果当前分支的修改没有被提交，使用该指令会覆盖修改，如果修改已经提交，则不会覆盖修改
 
 
-*git log*
+**git log**
+
 git log 主要是用于查看分支的提交情况，
 - git log 查看当前分支的提交记录
 - git log 分支1 ^分支2 查看分支1有的，而分支2没有的提交记录
@@ -46,11 +70,12 @@ git log 主要是用于查看分支的提交情况，
 - git log 分支1 ... 分支2 查看分支1和分支2各自提交的情况
 - git log --left-right 分支1 ... 分支2 查看分支1和分支2各自提交的情况，并且以左箭头和右箭头区分
 
-*git diff*
+**git diff**
+
 - git diff 分支(test)  比较当前分支与指定分支test，以test分支为主，比较test分支相比于当前分支，缺少什么修改，增加了什么修改
 
 
-*Problem*
+**Problem**
 
 1. 在github上配置了ssh，但是在Windows上进行远程push时，会出现如下问题： 
 ```
