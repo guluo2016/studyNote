@@ -48,3 +48,15 @@ git log 主要是用于查看分支的提交情况，
 
 *git diff*
 - git diff 分支(test)  比较当前分支与指定分支test，以test分支为主，比较test分支相比于当前分支，缺少什么修改，增加了什么修改
+
+
+*Problem*
+
+1. 在github上配置了ssh，但是在Windows上进行远程push时，会出现如下问题： 
+```
+Fatal: HttpRequestException encountered.
+Username for 'https://github.com':
+``` 
+解决办法：  
+去这里`https://github.com/microsoft/Git-Credential-Manager-for-Windows`下载`GCMW-1.19.0.exe`到本地，并且运行即可解决该问题。
+
