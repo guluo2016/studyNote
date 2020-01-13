@@ -1,5 +1,26 @@
-*git指令*
+*git指令*  
+
 - git merge 分支名   //用于把指定分支合并到当前所在分支上
+	在进行merge的时候，可能会会出现冲突，这个时候merge是没有完成的；这个是时候需要修改冲突文件，并再次提交修改，此时merge才算是完成   
+	例子：
+```
+	branch:test1 test2
+	将test1中的修改merge到test2分支
+
+	//将当前分支置位test2
+	git checkout test2
+	//merge
+	git merge test1
+	//在merge的时候，可能会出现冲突：CONFLICT:Merge conflict in XXX
+	//此时，可以使用git status发现哪些文件存在conflict
+	git status
+	//对存在conflict的文件进行修改，重新提交
+	git add .
+	git commit -m "修改冲突"
+
+	//merge 完成
+```
+
 - git branch  //查看当前仓库中一共有多少个分支，并显示出来
 - git branch 分知名  //创建一个新分支，如果该分支已经存在，则报错
 - git add [文件名]  //用于将工作区中的指定文件添加到缓存区中，以备提交，如果没有指定文件名，就是添加所有文件
