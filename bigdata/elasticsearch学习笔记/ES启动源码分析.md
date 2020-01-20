@@ -86,17 +86,23 @@ discovery.zen.minimum_master_nodes参数决定在选主过程中，最少需要�
 discovery.zen.ping.timeou这个值也与预防脑裂有点关系，它的作用是设置发现节点的超时时间，如果超过规定时间还没有发现对应节点，那么就认为该节点不存在。在网络差的环境下，可以适当地将该参数的值设置大一点，从而保证集群中有足够可用的节点，来参与选主。当然该参数不仅仅在选主的时候，有此作用。
 
 ** 3）选举发起 **  
-只有node.master: true的节点有资格成为Master节点，也有资格来发起Master选举。当ES集群首次启动的时候，如果对应节点有资格成为master节点，那么此时会发起master选举操作，它首先会ping集群中的其他节点，是根据配置文件参数来确定ping哪些节点的：
+只有node.master: true的节点有资格成为Master节点，才有资格来发起Master选举。当ES集群首次启动的时候，如果对应节点有资格成为master节点，那么此时会发起master选举操作，在单播模式下，它首先会ping集群中的其他节点，是根据配置文件参数来确定ping哪些节点的：
 ```
 discovery.zen.ping.multicast.enabled: false
 discovery.zen.ping.unicast.hosts: ["node1", "node2", "node2"]
+discovery.zen.ping.timeout: 3s （默认值是3s） 
 ```
+
 ES会默认以多播的形式，在同一网段内发送消息，以此来发现其他节点，但是当ES集群中的节点不再同一个网段，或者不允许使用多播的时候，可以使用单播形式发现其他节点，这个时候就需要把参数discovery.zen.ping.multicast.enabled: false设置为false  
 这个时候，ES会根据discovery.zen.ping.unicast.hosts的值，一个一个地给对应的节点发送消息，查看对应节点是否有效。
 
-** 4）选举规则 **
-经存在，那么它会申请加入这个集群，成功之后就算是完成了；如果此时ES集群中还没有master节点，它们
+另外当ES集群中的master节点挂掉之后，也会重新选举master节点。  
 
+** 4）选举规则 **   
+ES会ping其他节点，并且建立一个列表把ping到的所有有资格成为master的节点全部放到这个列表当中，然后基于这个列表搞一些事情：     
+
+1. 首先会比较这个列表中的元素个数（也即参与本次选举的master节点个数）是否大于等于discovery.zen.minimum_master_nodes的值，如果满足条件，则进行下一步操作，否则，循环等待；
+2. 对这个列表中的元素进行排序，按照列表中每个元素，即节点的state来进行排序，state越新，就会在列表中越靠前，最终这个节点会把列表中的第一个元素作为自己投票选举的master节点；
 
 ```
  /**
