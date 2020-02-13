@@ -80,7 +80,19 @@ git log 主要是用于查看分支的提交情况，
 
 **git diff**
 
-- git diff 分支(test)  比较当前分支与指定分支test，以test分支为主，比较test分支相比于当前分支，缺少什么修改，增加了什么修改
+- git diff 分支(test)  
+与test分支比较，当前所在分支增加了什么内容，减少了什么内容。增加的用+号表示，减少的用-好表示   
+	例子
+```
+git diff dev
+diff --git a/readme b/readme
+index 773c218..11d045a 100644
+--- a/readme
++++ b/readme       //当前分支与dev分支比较，存在不同内容的文件是哪个
+@@ -1 +1 @@
+-hello git  you are my lover      //相比于dev分支，当前分支中的readme删除了-号所表示的内容，增加了+号所表示的内容
++hello git   my name is lupeng
+```
 
 
 **Problem**
