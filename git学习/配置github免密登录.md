@@ -44,6 +44,33 @@ ps:项目clone下来后第一次push，仍然需要输入账号密码；输入�
 **此处的参考博客**  
 Git之SSH与HTTPS免密码配置:[https://www.jianshu.com/p/b5ec092fc1d1](https://www.jianshu.com/p/b5ec092fc1d1)
 
+
+## github配置代理，clone速度飞起来
+即使代理开起来，发现git clone项目还是很慢，网上说的修改hosts文件的方法提升效果几乎没有，还是使用代理速度肉眼可见提升。
+
+这里使用的代理是ss/ssr,其他代理方式没有试过，ss的默认本地端口是1080，为了使github clone变快，需要进行如下配置：
+```
+git config --global http.proxy 'socks5://127.0.0.1:1080'
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+```
+当执行上面的命令之后，去查看`~/.gitconf`文件，会发现多了如下内容：
+```
+[http]
+        proxy = socks5://127.0.0.1:1080
+[https]
+        proxy = socks5://127.0.0.1:1080
+```
+这里的意思就是说，在基于http/https协议进行github相关操作的时候，使用socks5代理。
+
+开启代理，进行git clone操作的时候，会发现速度提高不少。  
+这里给出我的测试数据，再不配置代理的情况下，下载速度不会超过10KB;配置代理后，下载速度能够达到300KB，提升还是很明显的。
+
+取消代理的方式是：
+```
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
+
 ## 解决git status中文乱码问题
 直接在输入指令：
 ```
