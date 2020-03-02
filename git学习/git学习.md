@@ -31,6 +31,15 @@
 	git branch --set-upstream-to=origin/dev dev 
 ```
 
+- git branch -vv //查看本地分支与远程的哪个分支进行关联
+```
+git branch -vv 
+
+* basic  3bad49b [origin/basic] git 配置代理的方式     //与远程basic关联
+  master e062af3 [origin/master]   					  //与远程master关联
+```
+
+
 - git add [文件名]  //用于将工作区中的指定文件添加到缓存区中，以备提交，如果没有指定文件名，就是添加所有文件
 - git commit -m "messgae"  //将缓存区中的修改信息提交到本地版本库，-m "message" 可以在提交的时候加一些说明信息
 - git checkout 分支名  //切换到指定分支
