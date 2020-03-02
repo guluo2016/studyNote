@@ -39,9 +39,10 @@ git config --global credential.helper store
 
 至此之后，就可以基于https协议去免密clone仓库，并且进行push、pull
 
+ps:项目clone下来后第一次push，仍然需要输入账号密码
 
 **此处的参考博客**  
-Git之SSH与HTTPS免密码配置:[https://www.jianshu.com/p/b5ec092fc1d1](https://www.jianshu.com/p/b5ec092fc1d1)()
+Git之SSH与HTTPS免密码配置:[https://www.jianshu.com/p/b5ec092fc1d1](https://www.jianshu.com/p/b5ec092fc1d1)
 
 ## 解决git status中文乱码问题
 直接在输入指令：
