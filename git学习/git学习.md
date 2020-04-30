@@ -3,7 +3,7 @@
 - git merge 分支名   //用于把指定分支合并到当前所在分支上
 	在进行merge的时候，可能会会出现冲突，这个时候merge是没有完成的；这个是时候需要修改冲突文件，并再次提交修改，此时merge才算是完成   
 	例子：
-```
+```shell
 	branch:test1 test2
 	将test1中的修改merge到test2分支
 
@@ -75,8 +75,35 @@ git branch -vv
 **git clone/git pull**
 
 - git clone是从远程仓库克隆一个完整的仓库到本地（包含了所有的分支）
+
 - git pull是从远程仓库中拉取指定分支与当前分支进行合并，如果当前分支的修改没有被提交，使用该指令会覆盖修改，如果修改已经提交，则不会覆盖修改
 
+  
+
+**git clone ---depth**
+
+git clone --depth {数字} *** 当远程仓库是GB大小时，直接clone会非常慢，特别是github，在国内下载本来就很慢，就会经常出现clone失败，这个时候可以在clone的时候加上--depth参数
+
+```
+//这种方式仅仅会clone远程仓库的默认分支，--depth 2表示仅仅clone最近的两次提交记录
+git clone --depth 2 ***.git
+
+//使用git clone --depth克隆下来的本地仓库，使用git fetch去拉取其他远程分支，会拉取不下来
+//这个时候可以去修改本地仓库的.git/config文件,主要修改的是fetch字段的值
+
+//刚刚clone下载是
+[remote "origin"]
+        fetch = +refs/heads/master:refs/remotes/origin/master
+        
+//修改成这样子
+[remote "origin"]
+        fetch = +refs/heads/*:refs/remotes/origin/*
+
+```
+
+
+
+  
 
 **git log**
 
@@ -104,13 +131,15 @@ index 773c218..11d045a 100644
 ```
 
 
+
+
 **Problem**
 
 1. 在github上配置了ssh，但是在Windows上进行远程push时，会出现如下问题： 
 ```
 Fatal: HttpRequestException encountered.
 Username for 'https://github.com':
-``` 
+```
 解决办法：  
 去这里`https://github.com/microsoft/Git-Credential-Manager-for-Windows`下载`GCMW-1.19.0.exe`到本地，并且运行即可解决该问题。
 
