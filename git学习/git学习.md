@@ -132,6 +132,43 @@ index 773c218..11d045a 100644
 
 
 
+**版本回退**
+
+当commit之后，觉得不对，可以进行版本回退。
+
+为了进行版本回退，我们首先需要知道commit id，使用git  log.
+
+```shell
+git log
+
+##获取结果
+commit 3dcd20b563f9e4df649eaa9f3f91068959e5b617
+Author: guluo <guluo@gamil.com>
+Date:   Tue May 26 20:26:18 2020 +0800
+
+    HBase整体架构原理讲解文章，这边博文非常好，HBase架构讲解的非常清楚
+
+commit 063e09c1028135e476c86e5482641104cdc65650
+Author: guluo <guluo@gamil.com>
+Date:   Tue May 26 10:33:51 2020 +0800
+
+    HBase Memstore基本原理学习
+    
+#这个时候，发现，最新的一次提交，存在一点问题，那么就可以进行回退
+#回退到上一次提交，可以使用HEAD^,HEAD表示当前版本，HEAD^表示上一个版本，HEAD^^上上版本，一次类推
+git reset --hard HEAD^
+#或者
+git reset --soft HEAD^
+```
+
+`git reset`常用的参数是`--hard`和`--soft`，两者的区别：
+
+`--hard`:回退版本，且不保留这次版本的修改在工作区
+
+`--soft`:回退版本，但是保留这次版本的修改在工作区
+
+
+
 
 **Problem**
 
