@@ -46,8 +46,5 @@ shuffle阶段如果细分的话，包括对map的输出结果进行combine、
 
 ​           reduce函数的格式：输入参数就是分组后的一组key以及随对应的迭代器。
 
-MapReduce的计算阶段总体来说分为三个阶段：
 
-Map阶段  --> shuffle阶段  --> reduce阶段
 
-shuffle阶段从map阶段的输出开始，一直到reduce阶段的输入结束
