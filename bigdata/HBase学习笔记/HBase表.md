@@ -1,4 +1,4 @@
-HBase中的meta表
+### HBase中的meta表
 
 meta表的命名空间是hbase，因此其全称为hbase:meta，它的信息是不显示在hbase的Master UI中的，但是在hbase shell中的可以通过`scan 'hbase:meta'`来查看meta表中的信息。
 
