@@ -1,4 +1,4 @@
-**git指令**  
+#### 1 git指令
 
 - git merge 分支名   //用于把指定分支合并到当前所在分支上
 	在进行merge的时候，可能会会出现冲突，这个时候merge是没有完成的；这个是时候需要修改冲突文件，并再次提交修改，此时merge才算是完成   
@@ -167,6 +167,40 @@ git reset --soft HEAD^
 
 `--soft`:回退版本，但是保留这次版本的修改在工作区
 
+
+
+#### 2 github上clone一个仓库之后，如何保持最新代码一致
+
+在github上看到一个好的项目如elasticsearch，将其fork为自己的仓库，那么如何保持自己的elasticsearch代码与远程elasticsearch仓库的代码保持一致呢？可以采取如下办法：
+
+```shell
+1 将自己github上的elasticsearch仓库clone到本地，作为本地仓库
+	git clone https://github.com/guluo2016/elasticsearch.git
+	此时，本地仓库的origin就是自己github上的elasticsearch仓库
+	远程github上的elasticsearch仓库相对于本地仓库而言，就是upstream
+2 执行git remote -v
+	origin  https://github.com/guluo2016/elasticsearch.git (fetch)
+	origin  https://github.com/guluo2016/elasticsearch.git (push)
+	可以发现目前的本地仓库仅仅与origin关联
+3 为了使得本地仓库与upstream关联，执行如下命令
+	git remote add upstream https://github.com/elastic/elasticsearch.git
+4 再次执行git remote -v
+	origin  https://github.com/guluo2016/elasticsearch.git (fetch)
+    origin  https://github.com/guluo2016/elasticsearch.git (push)
+    upstream        https://github.com/elastic/elasticsearch.git (fetch)
+    upstream        https://github.com/elastic/elasticsearch.git (push)
+    可以发现本地仓库与origin和upstream产生了关联
+    默认情况下，git push/pull都是与origin交互，如果本地仓库想与upstream交互，需要显示指明upstream
+5 从upstream中的master分支拉取最新代码，合并到本地仓库的master分支
+	git checkout master
+	git pull upstream master
+6 如果想取消与upstream的关联，可以执行如下命令
+	 git remote remove upstream
+```
+
+参考文档：
+
+[使用 git upstream 从其他远程仓库同步分支](http://jalan.space/2019/05/28/2019/git-upstream/)
 
 
 
