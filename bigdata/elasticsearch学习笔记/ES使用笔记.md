@@ -582,6 +582,30 @@ snapshot
 warmer
 ```
 
+查看ES的源码也可以看到几类线程的定义：
+
+```java
+public static class Names {
+    public static final String SAME = "same";
+    public static final String GENERIC = "generic";
+    public static final String GET = "get";
+    public static final String ANALYZE = "analyze";
+    public static final String WRITE = "write";
+    public static final String SEARCH = "search";
+    public static final String SEARCH_THROTTLED = "search_throttled";
+    public static final String MANAGEMENT = "management";
+    public static final String FLUSH = "flush";
+    public static final String REFRESH = "refresh";
+    public static final String WARMER = "warmer";
+    public static final String SNAPSHOT = "snapshot";
+    public static final String FORCE_MERGE = "force_merge";
+    public static final String FETCH_SHARD_STARTED = "fetch_shard_started";
+    public static final String FETCH_SHARD_STORE = "fetch_shard_store";
+    public static final String SYSTEM_READ = "system_read";
+    public static final String SYSTEM_WRITE = "system_write";
+}
+```
+
 接下来的三列是所有线程池的 **actinve**（活跃的），**queue**（队列中的）和 **reject**（拒绝的）的统计信息。
 
 ```
@@ -603,3 +627,4 @@ active queue rejected
 ```
 
 通过第三大列，可以看到三类信息，active的任务数，在队列中等待执行的任务、提交被决绝的任务，需要重点关注reject的统计信息，正常情况下为0，当ES集群压力过大时，如有有大量数据写入时，可能存在reject信息，值有可能不为0 。当客户端的写入请求有很多倍reject、集群中的节点频繁掉线的时候，可以考虑是否是reject的统计信息过大。
+
