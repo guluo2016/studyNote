@@ -1,1 +1,3 @@
-*.html linguist-language=python
+*.html linguist-language=java
+*.sh linguist-language=java
+*.md linguist-language=java
