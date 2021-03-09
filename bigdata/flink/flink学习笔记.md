@@ -25,7 +25,7 @@ StreamExecutionEnvironment streamEnv= StreamExecutionEnvironment.getExecutionEnv
 
 flink批数据主要是从一个已知的文件中获取，比如可以从txt、csv等文件中进行获取，如下所示。
 
-![image-20210309091132185](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210309091132185.png)
+![image-20210309091132185](./images/image-20210309091132185.png)
 
 **获取流数据**
 
@@ -41,24 +41,24 @@ env.addSource({一个SourceFunction对象})
 
 用户可以通过SourceFunction接口自定义流数据对象，也可以使用Flink中已经实现好的SourceFunction对象，如下所示。
 
-![image-20210308194951570](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308194951570.png)
+![image-20210308194951570](./images/image-20210308194951570.png)
 
 总的来说，flink可以通过如下几种方式来获取数据源：
 
 - 批处理
   - 通过集合方式获取
-    - ![image-20210308200347336](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308200347336.png)
-    - ![image-20210308200705393](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308200705393.png)
-    - ![image-20210308201048317](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308201048317.png)
+    - ![image-20210308200347336](./images/image-20210308200347336.png)
+    - ![image-20210308200705393](./images/image-20210308200705393.png)
+    - ![image-20210308201048317](./images/image-20210308201048317.png)
   - 通过文件获取数据流，上面已经说过
 
 - 流处理
 
-  - 通过socket进行获取，如图所示，通过传入一个主机ip字符串和端口号，进行监听socket数据流。![image-20210308201531091](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308201531091.png)
+  - 通过socket进行获取，如图所示，通过传入一个主机ip字符串和端口号，进行监听socket数据流。![image-20210308201531091](./images/image-20210308201531091.png)
 
   - 通过SourceFunction自定义数据流
 
-    ![image-20210308201941663](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308201941663.png)
+    ![image-20210308201941663](./images/image-20210308201941663.png)
 
 #### 3 data sink
 
@@ -70,7 +70,7 @@ env.addSource({一个SourceFunction对象})
 
 在flink中，通过`SourceFunction`来表示数据的Sink，并且Flink已经定义好了几种常用的Sink实现类。
 
-![image-20210308203251113](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210308203251113.png)
+![image-20210308203251113](./images/image-20210308203251113.png)
 
 #### 4 flink data transformation 
 
@@ -90,7 +90,7 @@ Flink应用程序的整体结构是：
 
 以map为例，来简单介绍数据是如何进行转换的。
 
-![image-20210304202249106](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210304202249106.png)
+![image-20210304202249106](./images/image-20210304202249106.png)
 
 #### 5 flink的window机制
 
