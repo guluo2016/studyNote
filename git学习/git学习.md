@@ -123,6 +123,17 @@
 	
 	//merge 完成
 	```
+	
+- git merge单一一个文件 `git checkout -p branchName fileName`
+  通过git merge是将某一个分支，整体合入当前分支。有时候，我们不需要合入整个分支，而是只将某一个文件的修改合入到当前分支，那么可以采用如下方式进行
+
+  例子：
+
+  ```shell
+  # -p 即--patch, branchName即要将哪个分支的文件合入，分支可以是本地分支，也可是远程分支(origin/branchName)， fileName即要合入的文件名字  
+  git checkout -p branchName fileName
+```
+
 
 #### 5 git log 
 
@@ -137,7 +148,9 @@
 #### 6 git diff
 
 - git diff 分支(test)  
-与test分支比较，当前所在分支增加了什么内容，减少了什么内容。增加的用+号表示，减少的用-好表示   
+
+	与test分支比较，当前所在分支增加了什么内容，减少了什么内容。增加的用+号表示，减少的用-好表示
+	
 	例子：
 	
 	```shell
