@@ -34,16 +34,37 @@
 ### 4 数组
 
 - shell不支持多维数组
-- 数组的声明方式： array_name=(A B C)`,注意数组用括号将数组元素包含起来，内部元素用空格进行分割；
+- 数组的声明方式： `array_name=(A B C)`,注意数组用括号将数组元素包含起来，内部元素用空格进行分割；
 - 另外一种声明数组方式：
-```
+```shell
 array_name[0]=A
 array_name[1]=B
 ...
 ```
 - 使用数组：`${array_name[0]}`
-- 使用@获取数组所有元素：`${array_name[@]}`
-- 获取数组长度：`${#array_name[@]}`
+
+- 使用@获取数组所有元素：`${array_name[@]}`或者`${my_array[*]}`
+
+- 获取数组长度：`${#array_name[@]}`或者`${#my_array[*]}`
+
+- 遍历数组
+
+  ```shell
+  #第一种方案
+  for ele in ${my_array[*]}
+  do
+  	echo $ele
+  done
+  
+  #第二种方案
+  i=0
+  while [[ i -lt ${#my_array[*]} ]]
+  do
+  	echo ${arr[$i]}
+  done
+  ```
+
+  
 
 ### 5 注释
 
@@ -189,3 +210,5 @@ fun_name [参数]
 
 - `. 文件路径/filename`  注意.和文件路径之间必须存在空格
 -  source 文件路径/filenam
+
+12 
