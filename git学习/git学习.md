@@ -45,36 +45,6 @@
 
   git clone --depth {数字} *** 当远程仓库是GB大小时，直接clone会非常慢，特别是github，在国内下载本来就很慢，就会经常出现clone失败，这个时候可以在clone的时候加上--depth参数。
 
-  例子：
-
-  ```shell
-  1 将自己github上的elasticsearch仓库clone到本地，作为本地仓库
-  	git clone https://github.com/guluo2016/elasticsearch.git
-  	此时，本地仓库的origin就是自己github上的elasticsearch仓库
-  	远程github上的elasticsearch仓库相对于本地仓库而言，就是upstream
-  2 执行git remote -v
-  	origin  https://github.com/guluo2016/elasticsearch.git (fetch)
-  	origin  https://github.com/guluo2016/elasticsearch.git (push)
-  	可以发现目前的本地仓库仅仅与origin关联
-  3 为了使得本地仓库与upstream关联，执行如下命令
-  	git remote add upstream https://github.com/elastic/elasticsearch.git
-  4 再次执行git remote -v
-  	origin  https://github.com/guluo2016/elasticsearch.git (fetch)
-      origin  https://github.com/guluo2016/elasticsearch.git (push)
-      upstream        https://github.com/elastic/elasticsearch.git (fetch)
-      upstream        https://github.com/elastic/elasticsearch.git (push)
-      可以发现本地仓库与origin和upstream产生了关联
-      默认情况下，git push/pull都是与origin交互，如果本地仓库想与upstream交互，需要显示指明upstream
-  5 从upstream中的master分支拉取最新代码，合并到本地仓库的master分支
-  	git checkout master
-  	git pull upstream master
-  6 如果想取消与upstream的关联，可以执行如下命令
-  	 git remote remove upstream
-  ```
-
-  参考文档：
-
-  [使用 git upstream 从其他远程仓库同步分支](http://jalan.space/2019/05/28/2019/git-upstream/)
 
 #### 3 关联操作
 
@@ -132,8 +102,21 @@
   ```shell
   # -p 即--patch, branchName即要将哪个分支的文件合入，分支可以是本地分支，也可是远程分支(origin/branchName)， fileName即要合入的文件名字  
   git checkout -p branchName fileName
-```
+  ```
+  
+- git cherry-pick 将制定的一次commit合入到当前分支
 
+  当维护多个分支，且代码不同时，我们无法将一个分支的修改合入到当前分支，但时候有时候有需要把特定的一次提交合入到当前分支，此时可以使用`git cherry-pick`来实现。
+
+  `git cherry-pick`的用法：
+
+  ```shell
+  #第一步， 切换到目标分支，获取指定的commit id
+  git log 
+  
+  #第二步，切换到要merge的分支
+  git cherry-pick ${commit id}
+  ```
 
 #### 5 git log 
 
@@ -204,28 +187,33 @@ git reset --soft HEAD^
 在github上看到一个好的项目如elasticsearch，将其fork为自己的仓库，那么如何保持自己的elasticsearch代码与远程elasticsearch仓库的代码保持一致呢？可以采取如下办法：
 
 ```shell
-1 将自己github上的elasticsearch仓库clone到本地，作为本地仓库
-	git clone https://github.com/guluo2016/elasticsearch.git
-	此时，本地仓库的origin就是自己github上的elasticsearch仓库
-	远程github上的elasticsearch仓库相对于本地仓库而言，就是upstream
-2 执行git remote -v
-	origin  https://github.com/guluo2016/elasticsearch.git (fetch)
-	origin  https://github.com/guluo2016/elasticsearch.git (push)
-	可以发现目前的本地仓库仅仅与origin关联
-3 为了使得本地仓库与upstream关联，执行如下命令
-	git remote add upstream https://github.com/elastic/elasticsearch.git
-4 再次执行git remote -v
-	origin  https://github.com/guluo2016/elasticsearch.git (fetch)
-    origin  https://github.com/guluo2016/elasticsearch.git (push)
-    upstream        https://github.com/elastic/elasticsearch.git (fetch)
-    upstream        https://github.com/elastic/elasticsearch.git (push)
-    可以发现本地仓库与origin和upstream产生了关联
-    默认情况下，git push/pull都是与origin交互，如果本地仓库想与upstream交互，需要显示指明upstream
-5 从upstream中的master分支拉取最新代码，合并到本地仓库的master分支
-	git checkout master
-	git pull upstream master
-6 如果想取消与upstream的关联，可以执行如下命令
-	 git remote remove upstream
+#1 将自己github上的elasticsearch仓库clone到本地，作为本地仓库
+git clone https://github.com/guluo2016/elasticsearch.git
+#此时，本地仓库的origin就是自己github上的elasticsearch仓库
+#远程github上的elasticsearch仓库相对于本地仓库而言，就是upstream
+
+#2 执行git remote -v
+origin  https://github.com/guluo2016/elasticsearch.git (fetch)
+origin  https://github.com/guluo2016/elasticsearch.git (push)
+#可以发现目前的本地仓库仅仅与origin关联
+
+#3 为了使得本地仓库与upstream关联，执行如下命令
+git remote add upstream https://github.com/elastic/elasticsearch.git
+
+#4 再次执行git remote -v
+origin  https://github.com/guluo2016/elasticsearch.git (fetch)
+origin  https://github.com/guluo2016/elasticsearch.git (push)
+upstream        https://github.com/elastic/elasticsearch.git (fetch)
+upstream        https://github.com/elastic/elasticsearch.git (push)
+#可以发现本地仓库与origin和upstream产生了关联
+#默认情况下，git push/pull都是与origin交互，如果本地仓库想与upstream交互，需要显示指明upstream
+
+#5 从upstream中的master分支拉取最新代码，合并到本地仓库的master分支
+git checkout master
+git pull upstream master
+
+#6 如果想取消与upstream的关联，可以执行如下命令
+git remote remove upstream
 ```
 
 参考文档：
