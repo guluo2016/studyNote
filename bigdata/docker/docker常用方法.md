@@ -40,8 +40,20 @@ docker的导入命令也有两个，分别对应于上面的导出
 
 
 
-<font color='red'>**需要注意的是通过`docker import`加载的docker镜像，在执行`docker run`的时候，需要带上`command`，否则会出错：**</font>
+遇到的问题
+
+**问题 1**
+
+<font color='red'>需要注意的是通过`docker import`加载的docker镜像，在执行`docker run`的时候，需要带上`command`，否则会出错：</font>
 
 ```shell
 /usr/bin/docker-current: Error response from daemon: No command specified
 ```
+
+**问题2**
+
+<font color='red'>使用`docker load`加载一个镜像完成之后，使用`docker images`进行查看，发现仓库名和tag都是`none`</font>
+
+这是因为在使用`docker save`命令保存一个镜像的方式不对，如果使用`docker save {镜像ID} -o xx.tar`命令进行镜像保存，则在加载的时候，就会出现该问题。
+
+正确的方法是使用`docker save {仓库名：tag} -o xx.tar`方式进行保存，则加载的时候就不会出现none问题
