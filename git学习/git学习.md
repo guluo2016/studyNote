@@ -182,7 +182,111 @@ git reset --soft HEAD^
 
 `--soft`:回退版本，但是保留这次版本的修改在工作区
 
-#### 8 github上clone一个仓库之后，如何保持最新代码一致
+#### 8 git rebase
+有时候，我们修改代码，会在本地进行多次提交，如下面所示：
+```shell
+commit e099beed237f049000843502b91c34b6cec90ed8
+Merge: f950978 c563abf
+Author: guluo <19660320+guluo2016@users.noreply.github.com>
+Date:   Tue Apr 6 17:15:29 2021 +0800
+
+    Merge branch 'lp'
+
+commit f950978495e918b3302496692c2fcdf4ec1ac9e3
+Author: guluo <19660320+guluo2016@users.noreply.github.com>
+Date:   Tue Apr 6 17:14:38 2021 +0800
+
+    update b,txt
+
+commit c563abf5465222551fa206aeb2db0d511dead865
+Author: guluo <19660320+guluo2016@users.noreply.github.com>
+Date:   Tue Apr 6 17:13:56 2021 +0800
+
+    add lp.txt
+```
+
+如果这些提交最终解决的是一个问题的话，那么最好将这些提交合并成一个commit，这个时候可以使用`git rebase`命令来进行：
+
+```shell
+# -i表示进行交互
+#将本分支上的最近两次提交合并为一次提交
+git rebase -i HEAD~2
+```
+
+执行完命令之后，进入交互界面
+
+```shell
+p f950978 update b,txt
+s c563abf add lp.txt
+
+##这里我们将后一次提交合并到第一次上，并且保留提交信息
+# Rebase d277f91..e099bee onto d277f91 (2 command(s))
+#
+# Commands:
+# p, pick = use commit  表示使用本次提交
+# r, reword = use commit, but edit the commit message  使用本次提交，但是修改提交注释
+# e, edit = use commit, but stop for amending    使用本次提交，还需要干其他事（修改注释等）
+# s, squash = use commit, but meld into previous commit  合并本次提交到上一次提交
+# f, fixup = like "squash", but discard this commit's log message 合并提交，但是丢弃提交注释
+# x, exec = run command (the rest of the line) using shell  执行shell命令
+# d, drop = remove commit 丢弃本次提交
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out
+
+```
+
+保存退出之后，进入另外一个交互界面：
+
+```shell
+# This is a combination of 2 commits.
+# The first commit's message is:
+
+merge commit: update b.txt and add lp.txt  
+
+# This is the 2nd commit message:
+
+#add lp.txt
+
+#我们根据需要可以修改提交注释，这将作为最终合并的提交的提交注释存在
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Apr 6 17:14:38 2021 +0800
+#
+# interactive rebase in progress; onto d277f91
+# Last commands done (2 commands done):
+#    p f950978 update b,txt
+#    s c563abf add lp.txt
+# No commands remaining.
+# You are currently editing a commit while rebasing branch 'master' on 'd277f91'.
+#
+# Changes to be committed:
+#       modified:   b.txt
+#       new file:   lp.txt
+```
+
+保存提出之后，即完成了将多次commit合并为一次commit。
+
+```shell
+$ git log
+commit 9807c64e0e4d208a7cdc8b2f37053b1953fa0fb8
+Author: guluo <19660320+guluo2016@users.noreply.github.com>
+Date:   Tue Apr 6 17:14:38 2021 +0800
+
+    merge commit: update b.txt and add lp.txt
+
+```
+
+
+
+#### 9 github上clone一个仓库之后，如何保持最新代码一致
 
 在github上看到一个好的项目如elasticsearch，将其fork为自己的仓库，那么如何保持自己的elasticsearch代码与远程elasticsearch仓库的代码保持一致呢？可以采取如下办法：
 
