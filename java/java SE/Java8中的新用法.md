@@ -13,7 +13,7 @@ public interface ConlonInter{
     void print();
 }
 
-public class Java8ColonTest{
+public class Java8ColonTest implements ColonInter{
     //定义一个方法，方法参数是ConlonInter
     public void print(ConlonInter colon){
         colon.print();
