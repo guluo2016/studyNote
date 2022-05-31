@@ -4,9 +4,7 @@
 
 HBase中，Region是集群节点上的最小数据单元，用户数据表由一个或多个Region组成。在Region中每个ColumnFamily的数据组成一个Store。每个Store由一个Memstore和多个HFile组成，如下如所示：
 
-
-
-![Region结构](../../image/bigdata/hbase/region.png)
+![region](https://github.com/guluo2016/picture/raw/dev/img/region.png)
 
 HBase是基于**LSM-Tree**模型的，所有的数据更新插入操作都**首先写入Memstore中**（同时会顺序写到日志HLog中），**达到指定大小之后再将这些修改操作批量写入磁盘**，生成一个新的HFile文件，这种设计可以极大地提升HBase的写入性能；另外，HBase为了方便按照RowKey进行检索，**要求HFile中数据都按照RowKey进行排序**，Memstore数据在flush为HFile之前会进行一次排序，将数据有序化。
 

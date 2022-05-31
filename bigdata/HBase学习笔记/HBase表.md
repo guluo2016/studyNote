@@ -4,11 +4,11 @@ meta表的命名空间是hbase，因此其全称为hbase:meta，它的信息是�
 
 meta表的表结构是：
 
-![hbase:meta表结构](../../image/bigdata/hbase/hbase META表结构.png) 
+![hbase META表结构](https://github.com/guluo2016/picture/raw/dev/img/hbase%20META%E8%A1%A8%E7%BB%93%E6%9E%84.png) 
 
 meta表内容示例是：
 
-![](../../image/bigdata/hbase/meta表内容示例.png)
+![meta表内容示例](https://github.com/guluo2016/picture/raw/dev/img/meta%E8%A1%A8%E5%86%85%E5%AE%B9%E7%A4%BA%E4%BE%8B.png) 
 
 从这个内容中也可以看出来，rowkey是由（表名，region信息[以startkey表示]，创建的时间戳.分区的uuid）组成。接下来展示的就是[(列族:列名，时间戳)，再接下来就是(value值)] 这个可能有多个。
 
