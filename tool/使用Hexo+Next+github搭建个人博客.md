@@ -4,8 +4,11 @@ next是Hexo框架内的一套主题。
 
 github作为生成的静态资源文件的托管平台。实际上我们通过Hexo也可以实现这些静态资源的托管，但是这样只能发布在本地，如果想通过互联网发布，则需要自己购买服务器，并自行申请域名之类的操作。而github中提供github pages功能，可以免费托管我们发布的内容，另外github pages还会自动为其创建一个域名。
 
-### hexo框架
-#### 安装hexo
+<!--more-->
+
+## hexo框架
+
+### 安装hexo
 
 由于hexo是基于Node.js的框架，因此安装hexo之前，首先需要安装node.js。  
 node.js和hexo之间存在版本要求，具体如下所示。
@@ -23,9 +26,9 @@ npm install -g hexo-cli
 
 ![image-20220714134809507](https://github.com/guluo2016/picture/raw/dev/img/image-20220714134809507.png)
 
-#### hexo基本操作
+### hexo基本操作
 
-##### 初始化一个hexo项目
+#### 初始化一个hexo项目
 
 ```shell
 # 初始化一个hexo 博客
@@ -46,7 +49,7 @@ hexo init blog_test
 
 - public，文件夹，生成的静态资源文件，会放到public文件夹下，默认按照时间进行分类（初始化时，未创建，在执行完下面的hexo g之后，会自动生成）
 
-##### 生成静态资源
+#### 生成静态资源
 
 ```shell
 # 一键生成静态资源
@@ -61,7 +64,7 @@ hexo g
 
 
 
-##### 启动服务器，发布
+#### 启动服务器，发布
 
 ```shell
 # 启动hexo服务，用于在本地浏览器查看hexo生成的网页内容
@@ -74,11 +77,11 @@ hexo s
 
 ![image-20220712141114021](https://github.com/guluo2016/picture/raw/dev/img/image-20220712141114021.png)
 
-### next主题
+## next主题
 
 hexo默认的主题，不是太好看，使用比较多的hexo主题是next。
 
-#### 安装next主题
+### 安装next主题
 
 切换到hexo项目目录，会有一个theme文件夹，用于存放各种主题，hexo默认是没有安装next主题的，我们需要通过git clone从github上将next主题clone到theme文件夹中。
 
@@ -122,7 +125,7 @@ hexo clean && hexo g && hexo s
 从博客页面上来看，对站点配置文件的修改配置也生效了
 
 
-#### 配置next
+### 配置next
 
 next主题下同样有一个_config.yml文件，称之为主题配置文件。通过修改主题配置文件，可以进行一些自定义配置。
 
@@ -194,10 +197,10 @@ description: 大漠孤烟直，长河落日圆
 
 ![image-20220712144235301](https://github.com/guluo2016/picture/raw/dev/img/image-20220712144235301.png)
 
-### 博客个性化配置
+## 博客个性化配置
 
 
-#### 为博客增加标签、分类页
+### 为博客增加标签、分类页
 
 在hexo项目的根目录下，执行如下命令，进行创建：
 
@@ -227,7 +230,7 @@ menu:
 
 ![image-20220714103032946](https://github.com/guluo2016/picture/raw/dev/img/image-20220714103032946.png)
 
-#### 增加站内搜索功能
+### 增加站内搜索功能
 
 要实现博客的站内搜索功能，需要借助于插件`hexo-generator-searchdb`，因此在hexo项目下，安装该插件：  
 ```shell
@@ -262,7 +265,7 @@ local_search:
 
 ![image-20220714141451682](https://github.com/guluo2016/picture/raw/dev/img/image-20220714141451682.png)
 
-#### 设置博客文章展示部分
+### 设置博客文章展示部分
 
 在hexo的source目录下的博客源markdown文件中，合适的位置增加一样md语法，即可实现。
 
@@ -272,7 +275,7 @@ local_search:
 
 ![image-20220714103449990](https://github.com/guluo2016/picture/raw/dev/img/image-20220714103449990.png)
 
-### 将hexo项目部署到github page
+## 将hexo项目部署到github page
 
 首先得在github上创建一个仓库，仓库名字是`{github昵称}.github.io`。然后查看该仓库的settings，并选择pages页面，可以查看到网址，我们通过该网址可以直接访问该仓库中的静态html资源。
 
@@ -311,7 +314,7 @@ hexo d
 
 接着，就可以登录前面所述的github pages页面的网址，查看博客网站了。
 
-### 设置评论功能模块
+## 设置评论功能模块
 
 这里采用gitalk插件，来实现自建博客的评论功能。
 
@@ -321,7 +324,7 @@ hexo d
 
 为了实现上述功能，需要进行如下操作。
 
-#### 申请OAuth 认证
+### 申请OAuth 认证
 
 登录github，在个人账户settings下，选择 `Developer settings` -- `OAuth Apps`,进行OAuth认证。
 
@@ -333,7 +336,7 @@ hexo d
 
 ![image-20220714110622403](https://github.com/guluo2016/picture/raw/dev/img/image-20220714110622403.png)
 
-#### 在next主题配置文件中配置gitalk
+### 在next主题配置文件中配置gitalk
 
 ```yaml
 gitalk:
@@ -346,7 +349,7 @@ gitalk:
   distractionFreeMode: true
 ```
 
-#### 增加gitalk相关内容
+### 增加gitalk相关内容
 
 在`netx\layout\_third-party\comments`目录下，新建gitalk.swig文件，并添加如下内容
 
