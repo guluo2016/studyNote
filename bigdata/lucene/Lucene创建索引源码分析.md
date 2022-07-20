@@ -367,7 +367,7 @@ Lucene创建倒排索引是以Field为单位进行创建的，每个Field中的�
 
 Lucene创建索引的内存细节可以用下图来进行说明。
 
-![Lucene创建索引细节图](../../image/bigdata/lucene/Lucene创建索引细节图.jpg)
+![Lucene创建索引细节图](https://github.com/guluo2016/picture/raw/dev/img/Lucene%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E7%BB%86%E8%8A%82%E5%9B%BE.jpg)
 
 bytePool和termBytePool指向的是同一块内存区域。内存结构如下
 

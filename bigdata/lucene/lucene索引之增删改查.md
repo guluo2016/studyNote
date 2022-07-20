@@ -10,7 +10,7 @@
 
 
 ### 1 通过Lucene创建索引
-```
+```java
 /**
 创建Lucene索引
 **/
@@ -53,7 +53,7 @@ Field的实现类的区别:
 
 
 ### 2 搜索
-```
+```java
 public void search(Path path) throws  IOException{
 	//指定索引所在位置
     Directory directory = FSDirectory.open(path);
@@ -93,7 +93,7 @@ public void search(Path path) throws  IOException{
 ```
 
 ### 3 更新索引
-```
+```java
 /**
 Lucene中虽然有update索引的接口，但是根据实际的操作结果来看，update并不是修改已有文档内容，而是
 直接往集群中添加一个新文档，原有文档仍然存在，也仍然可以被搜素
@@ -117,7 +117,7 @@ public void updateIndex(Path path) throws  IOException{
 ```
 
 ### 4 删除索引
-```
+```java
 public void deleteIndex(Path path) throws IOException{
     Directory directory = FSDirectory.open(path);
     IndexWriterConfig config = new IndexWriterConfig(new IKAnalyzer());
@@ -138,7 +138,7 @@ public void deleteIndex(Path path) throws IOException{
 ```
 
 ### 5 查看分词器的分词效果
-```
+```java
 public void tokenResult(String content, Analyzer analyzer) throws IOException{
 		//对content，使用analyzer对其进行分词
         TokenStream tokenStream =  analyzer.tokenStream("content",content);
